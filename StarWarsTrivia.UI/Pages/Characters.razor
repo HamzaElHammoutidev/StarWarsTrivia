@@ -1,0 +1,70 @@
+﻿@page "/"
+<div class="search-bar">
+    <input type="text" @bind="searchTerm" placeholder="Search characters" />
+    <button @onclick="SearchCharacters">Search</button>
+</div>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
+@if (IsLoading)
+{
+    <p>Loading...</p>
+}
+
+else if (characters == null || !characters.Any())
+{
+    <p>No characters found</p>
+}
+else
+{
+    @foreach (var character in characters)
+    {
+        <h3>@character.Name</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Films</th>
+                    <th>Vehicles</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var filmsCount = character.Films?.Count() ?? 0;
+                    var vehiclesCount = character.Vehicles?.Count() ?? 0;
+                    var maxCount = Math.Max(filmsCount, vehiclesCount);
+
+                    for (int i = 0; i < maxCount; i++)
+                    {
+                        <tr>
+                            <td>
+                                @if (i < filmsCount)
+                                {
+                                    @character.Films!.ElementAt(i)
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (i < vehiclesCount)
+                                {
+                                    @character.Vehicles!.ElementAt(i)
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+}
